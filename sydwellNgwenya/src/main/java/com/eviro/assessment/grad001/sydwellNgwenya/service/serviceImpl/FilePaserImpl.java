@@ -158,8 +158,8 @@ public class FilePaserImpl implements FileParser {
         try {
             url = imageUri.toURL();
             imageUrl = url.toString();
-            imageUrl = imageUrl.replace("file:", "http:");
-            imageUrl = URLEncoder.encode(imageUrl, "UTF-8");
+            imageUrl = imageUrl.replace("file:", "http://com.eviro.assessment.grad001.sydwellNgwenya");
+           
 
         } catch (IOException ex) {
             Logger.getLogger(FilePaserImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -168,7 +168,7 @@ public class FilePaserImpl implements FileParser {
         return imageUrl;
     }
 
-    public String getImageUrl(String name, String surname) throws AccountProfileNotFound {
+    private String getImageUrl(String name, String surname) throws AccountProfileNotFound {
         AccountProfile image = accountProfileRepository.findByNameAndSurname(name, surname);
         if (image != null) {
             return image.getHttpImageLink();
