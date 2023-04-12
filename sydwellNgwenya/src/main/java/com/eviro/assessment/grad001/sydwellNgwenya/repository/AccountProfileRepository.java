@@ -8,6 +8,7 @@ package com.eviro.assessment.grad001.sydwellNgwenya.repository;
 import com.eviro.assessment.grad001.sydwellNgwenya.entity.AccountProfile;
 import com.eviro.assessment.grad001.sydwellNgwenya.error.AccountProfileNotFound;
 import java.io.File;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -16,8 +17,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface AccountProfileRepository extends JpaRepository<AccountProfile, Long>{
 
-    public AccountProfile findByNameAndSurname(String name, String surname)throws AccountProfileNotFound;
+    public List<AccountProfile> findByNameAndSurname(String name, String surname);
 
-    public AccountProfile findByNameAndSurnameAndHttpImageLink(String name, String Surname, String imageLinkString);
+    public List<AccountProfile> findByNameAndSurnameAndHttpImageLinkEndsWith(String name, String Surname, String imageLinkString);
     
 }

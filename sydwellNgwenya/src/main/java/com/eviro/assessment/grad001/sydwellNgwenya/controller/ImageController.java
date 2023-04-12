@@ -73,6 +73,7 @@ public class ImageController {
                 outputStream.write(buffer, 0, readBytes);
             }
         }
+        inputStream.close();
         return file;
     }
 }

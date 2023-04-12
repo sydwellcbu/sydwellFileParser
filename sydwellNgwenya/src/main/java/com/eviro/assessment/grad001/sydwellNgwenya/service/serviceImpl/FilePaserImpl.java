@@ -136,13 +136,10 @@ public class FilePaserImpl implements FileParser {
 
         logger.info("inside getImageHttpLink in FilePaserImpl");
 
-//        parseCSV(csvFile);
-//        String link = "file:/C:/Users/Public/Desktop/Momentum_Health.png";
-        //  AccountProfile dbUser = accountProfileRepository.getByNameAndSurnameAndHttpImageLink(name, Surname, link);
         parseCSV(csvFile);
 
         try {
-            return getImageUrl(name, Surname);
+            return getHttpLinkFromDb(name, Surname);
         } catch (AccountProfileNotFound ex) {
             Logger.getLogger(FilePaserImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -159,7 +156,6 @@ public class FilePaserImpl implements FileParser {
             url = imageUri.toURL();
             imageUrl = url.toString();
             imageUrl = imageUrl.replace("file:", "http://com.eviro.assessment.grad001.sydwellNgwenya");
-           
 
         } catch (IOException ex) {
             Logger.getLogger(FilePaserImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -168,12 +164,18 @@ public class FilePaserImpl implements FileParser {
         return imageUrl;
     }
 
-    private String getImageUrl(String name, String surname) throws AccountProfileNotFound {
-        AccountProfile image = accountProfileRepository.findByNameAndSurname(name, surname);
-        if (image != null) {
-            return image.getHttpImageLink();
+    private String getHttpLinkFromDb(String name, String surname) throws AccountProfileNotFound {
+
+        // String imagename = "Momentum_Health.png";
+        // List<AccountProfile> accountProfile = accountProfileRepository.findByNameAndSurnameAndHttpImageLinkEndsWith(name, surname, imagename);
+        List<AccountProfile> accountProfile = accountProfileRepository.findByNameAndSurname(name, surname);
+
+        if (!accountProfile.isEmpty()) {
+            AccountProfile accountProfile1 = accountProfile.get(0);
+            return accountProfile1.getHttpImageLink();
         } else {
             throw new AccountProfileNotFound("Account Profile is not foubd");
         }
+
     }
 }
