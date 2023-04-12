@@ -6,10 +6,7 @@
 package com.eviro.assessment.grad001.sydwellNgwenya.controller;
 
 import com.eviro.assessment.grad001.sydwellNgwenya.entity.AccountProfile;
-import com.eviro.assessment.grad001.sydwellNgwenya.entity.CsvFlateFile;
-import com.eviro.assessment.grad001.sydwellNgwenya.repository.AccountProfileRepository;
 import com.eviro.assessment.grad001.sydwellNgwenya.service.FileParser;
-import com.eviro.assessment.grad001.sydwellNgwenya.service.serviceImpl.FilePaserImpl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -42,10 +39,35 @@ public class ImageController {
     @Autowired
     private FileParser fileParser;
 
-    @Autowired
-    private CsvFlateFile csvFlateFile;
-    
+
     public static final Logger logger = Logger.getLogger(ImageController.class.getName());
+//
+//    @GetMapping(value = "/{name}/{surname}")
+//    public ResponseEntity<FileSystemResource> getHttpImagelink(@PathVariable String name, @PathVariable String surname, @RequestParam("file") MultipartFile multipartFile) {
+//        logger.info("Inside get HttpImageLink in Image Conroller Class");
+//
+//        File file = null;
+//        try {
+//            file = convertMultipartFileToFile(multipartFile);
+//        } catch (IOException ex) {
+//            Logger.getLogger(ImageController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//
+//        String httpLink = fileParser.getImageHttpLink(name, surname, file);
+//
+//        FileSystemResource imageResource = new FileSystemResource(httpLink);
+//
+//        try {
+//            return ResponseEntity.ok()
+//                    .contentLength(imageResource.contentLength())
+//                    .contentType(MediaType.IMAGE_JPEG)
+//                    .body(imageResource);
+//        } catch (IOException ex) {
+//            Logger.getLogger(ImageController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return null;
+//
+//    }
 
     @GetMapping(value = "/{name}/{surname}")
     public String getHttpImagelink(@PathVariable String name, @PathVariable String surname, @RequestParam("file") MultipartFile multipartFile) {

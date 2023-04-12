@@ -6,8 +6,6 @@
 package com.eviro.assessment.grad001.sydwellNgwenya.repository;
 
 import com.eviro.assessment.grad001.sydwellNgwenya.entity.AccountProfile;
-import com.eviro.assessment.grad001.sydwellNgwenya.error.AccountProfileNotFound;
-import java.io.File;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 

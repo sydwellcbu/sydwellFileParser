@@ -10,37 +10,20 @@ import com.eviro.assessment.grad001.sydwellNgwenya.entity.CsvFlateFile;
 import com.eviro.assessment.grad001.sydwellNgwenya.error.AccountProfileNotFound;
 import com.eviro.assessment.grad001.sydwellNgwenya.repository.AccountProfileRepository;
 import com.eviro.assessment.grad001.sydwellNgwenya.service.FileParser;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
-import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
-import javax.imageio.ImageIO;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import static com.eviro.assessment.grad001.sydwellNgwenya.controller.ImageController.logger;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.FileCopyUtils;
 
 /**
@@ -49,6 +32,9 @@ import org.springframework.util.FileCopyUtils;
  */
 @Service
 public class FilePaserImpl implements FileParser {
+
+    @Value("${server.port}")
+    private int serverPort;
 
     @Autowired
     private AccountProfileRepository accountProfileRepository;
@@ -150,16 +136,12 @@ public class FilePaserImpl implements FileParser {
 
         logger.info("inside createHttpImageLink in FilePaserImpl");
 
-        URL url = null;
-        String imageUrl = null;
-        try {
-            url = imageUri.toURL();
-            imageUrl = url.toString();
-            imageUrl = imageUrl.replace("file:", "http://com.eviro.assessment.grad001.sydwellNgwenya");
-
-        } catch (IOException ex) {
-            Logger.getLogger(FilePaserImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        String http = "http://localhost:" + serverPort;
+        String stringUri = imageUri.toString();
+        int lastIndex = stringUri.lastIndexOf("/");
+        String lastPart = stringUri.substring(lastIndex);
+        String imageUrl = http+lastPart;
+        
 
         return imageUrl;
     }

@@ -27,4 +27,5 @@ public class CsvFlateFile {
     private String imageFormat;
     private String imageData;
 
+    
 }
