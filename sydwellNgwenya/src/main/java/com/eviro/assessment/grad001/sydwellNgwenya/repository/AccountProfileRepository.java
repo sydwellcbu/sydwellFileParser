@@ -17,6 +17,4 @@ public interface AccountProfileRepository extends JpaRepository<AccountProfile, 
 
     public List<AccountProfile> findByNameAndSurname(String name, String surname);
 
-    public List<AccountProfile> findByNameAndSurnameAndHttpImageLinkEndsWith(String name, String Surname, String imageLinkString);
-    
 }

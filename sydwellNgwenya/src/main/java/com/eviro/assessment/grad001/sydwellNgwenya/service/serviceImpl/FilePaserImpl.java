@@ -39,7 +39,7 @@ public class FilePaserImpl implements FileParser {
     @Autowired
     private AccountProfileRepository accountProfileRepository;
     private CsvFlateFile csvFlateFile;
-    public static final Path resourceDirectory = Paths.get("src", "main", "resources", "images");
+    public static final Path resourceDirectory = Paths.get("src", "resources", "images");
     @Override
     public void parseCSV(File csvFile) {
         boolean skip = false;
@@ -92,17 +92,15 @@ public class FilePaserImpl implements FileParser {
         logger.info("inside convertCSVDataToImage in FilePaserImpl");
         /*            Decode base64 image data and save as physical file */
         byte[] imageBytes = Base64.getDecoder().decode(base64ImageString);
-        String imageName = csvFlateFile.getName() + "_" + csvFlateFile.getSurName() + "." + csvFlateFile.getImageFormat();
+        String imageName = csvFlateFile.getName()+csvFlateFile.getSurName() + "." + csvFlateFile.getImageFormat();
         Path filePath = null;
         try {
 
             filePath = resourceDirectory.resolve(imageName);
             Files.createDirectories(resourceDirectory);
             FileCopyUtils.copy(imageBytes, filePath.toFile());
-
             Files.createDirectories(resourceDirectory);
 
-            FileCopyUtils.copy(imageBytes, filePath.toFile());
         } catch (IOException ex) {
             Logger.getLogger(FilePaserImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -117,18 +115,15 @@ public class FilePaserImpl implements FileParser {
     }
 
     @Override
-    public String getImageHttpLink(String name, String Surname, File csvFile) {
+    public String getImageHttpLink(String name, String Surname, File csvFile) throws AccountProfileNotFound{
 
         logger.info("inside getImageHttpLink in FilePaserImpl");
 
         parseCSV(csvFile);
 
-        try {
+        
             return getHttpLinkFromDb(name, Surname);
-        } catch (AccountProfileNotFound ex) {
-            Logger.getLogger(FilePaserImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return "Account not Found";
+   
     }
 
     private String createHttpImageLink(URI imageUri) {
@@ -147,15 +142,13 @@ public class FilePaserImpl implements FileParser {
 
     private String getHttpLinkFromDb(String name, String surname) throws AccountProfileNotFound {
 
-        // String imagename = "Momentum_Health.png";
-        // List<AccountProfile> accountProfile = accountProfileRepository.findByNameAndSurnameAndHttpImageLinkEndsWith(name, surname, imagename);
         List<AccountProfile> accountProfile = accountProfileRepository.findByNameAndSurname(name, surname);
 
         if (!accountProfile.isEmpty()) {
             AccountProfile accountProfile1 = accountProfile.get(0);
             return accountProfile1.getHttpImageLink();
         } else {
-            throw new AccountProfileNotFound("Account Profile is not foubd");
+            throw new AccountProfileNotFound("Account Profile is not found");
         }
 
     }

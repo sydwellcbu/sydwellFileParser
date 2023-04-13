@@ -5,14 +5,10 @@
  */
 package com.eviro.assessment.grad001.sydwellNgwenya.service;
 
-import com.eviro.assessment.grad001.sydwellNgwenya.entity.AccountProfile;
-import com.eviro.assessment.grad001.sydwellNgwenya.entity.CsvFlateFile;
+import com.eviro.assessment.grad001.sydwellNgwenya.error.AccountProfileNotFound;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.List;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 
 /**
  *
@@ -26,5 +22,5 @@ public interface FileParser {
 
     URI createImagelink(File fileImage);
 
-    String getImageHttpLink(String name, String Surname,File csvFile);
+    String getImageHttpLink(String name, String Surname, File csvFile) throws AccountProfileNotFound;
 }

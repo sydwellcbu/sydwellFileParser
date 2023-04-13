@@ -5,6 +5,7 @@
  */
 package com.eviro.assessment.grad001.sydwellNgwenya.controller;
 
+import com.eviro.assessment.grad001.sydwellNgwenya.error.AccountProfileNotFound;
 import com.eviro.assessment.grad001.sydwellNgwenya.service.FileParser;
 import static com.eviro.assessment.grad001.sydwellNgwenya.service.serviceImpl.FilePaserImpl.resourceDirectory;
 import java.io.File;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
@@ -37,10 +39,9 @@ public class ImageController {
 
     public static final Logger logger = Logger.getLogger(ImageController.class.getName());
 
-    @GetMapping(value = "/{name}/{surname}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public ResponseEntity<FileSystemResource> getHttpImagelink(@PathVariable String name, @PathVariable String surname, @RequestParam("file") MultipartFile multipartFile) {
+    @GetMapping(value = "/{name}/{surname}/{pattern}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
+    public ResponseEntity<FileSystemResource> getHttpImagelink(@PathVariable String name, @PathVariable String surname, @PathVariable("pattern") @Pattern(regexp = "\\w\\.\\w") String pattern, @RequestParam("file") MultipartFile multipartFile) throws AccountProfileNotFound {
         logger.info("Inside get HttpImageLink in Image Conroller Class");
-
         File file = null;
         try {
             file = convertMultipartFileToFile(multipartFile);
@@ -50,12 +51,10 @@ public class ImageController {
 
         String httpLink = fileParser.getImageHttpLink(name.trim().replaceAll("\\s", ""), surname.trim().replaceAll("\\s", ""), file);
 
-        int lastIndex = httpLink.lastIndexOf("/");
-        String imagePath = httpLink.substring(lastIndex);
-        FileSystemResource resource = new FileSystemResource(resourceDirectory + imagePath);
+     
+        FileSystemResource resource = new FileSystemResource(resourceDirectory + "/" + pattern);
         return ResponseEntity.ok()
                 .body(resource);
-
     }
 
     private File convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
