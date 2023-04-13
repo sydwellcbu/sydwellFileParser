@@ -39,37 +39,37 @@ public class FilePaserImpl implements FileParser {
     @Autowired
     private AccountProfileRepository accountProfileRepository;
     private CsvFlateFile csvFlateFile;
-
+    public static final Path resourceDirectory = Paths.get("src", "main", "resources", "images");
     @Override
     public void parseCSV(File csvFile) {
         boolean skip = false;
 
         try {
-            //getting physical image absolute path
-            Path path = Paths.get(csvFile.getPath());
+            //getting csv file path
+            Path csvFilePath = Paths.get(csvFile.getPath());
 
             //passing the file content to a list of a string
-            List<String> lines = Files.readAllLines(path);
+            List<String> csvContent = Files.readAllLines(csvFilePath);
 
             //reading line by line of the string list
-            for (String line : lines) {
+            for (String line : csvContent) {
                 if (skip == true) {
                     logger.info("parseCSV file in FilePaserImpl ");
                     String[] fields = line.split(",");
                     if (fields.length == 4) {
                         //passing the csv content to a new csvFlateFile
-                        csvFlateFile = new CsvFlateFile(fields[0], fields[1], fields[2].substring(6), fields[3]);
-                        logger.info("convertCSVDataToImage in FilePaserImpl size =" + fields.length);
+                        csvFlateFile = new CsvFlateFile(fields[0].trim().replaceAll("\\s", ""), fields[1].trim().replaceAll("\\s", ""), fields[2].substring(6), fields[3]);
+                        logger.log(Level.INFO, "convertCSVDataToImage in FilePaserImpl size ={0}", fields.length);
                         //calling the convertCSVDataToImage to create a physical image file
-                        File imageFile = convertCSVDataToImage(csvFlateFile.getImageData());
+                        File imagePhysicalFile = convertCSVDataToImage(csvFlateFile.getImageData());
                         logger.info("createImagelink in FilePaserImpl");
                         //creating the fille image uri
-                        URI imageUri = createImagelink(imageFile);
+                        URI imageUri = createImagelink(imagePhysicalFile);
                         logger.info("createHttpImageLink in FilePaserImpl");
-                        //creating image URL
-                        String imageUrl = createHttpImageLink(imageUri);
+                        //creating http image link
+                        String httpImageLink = createHttpImageLink(imageUri);
                         //Saving  Account Profile
-                        AccountProfile dbAccountProfile = new AccountProfile(csvFlateFile.getName(), csvFlateFile.getSurName(), imageUrl);
+                        AccountProfile dbAccountProfile = new AccountProfile(csvFlateFile.getName(), csvFlateFile.getSurName(), httpImageLink);
                         logger.info("Saving CSV File in FilePaserImpl");
                         accountProfileRepository.save(dbAccountProfile);
 
@@ -96,7 +96,6 @@ public class FilePaserImpl implements FileParser {
         Path filePath = null;
         try {
 
-            Path resourceDirectory = Paths.get("src", "main", "resources", "images");
             filePath = resourceDirectory.resolve(imageName);
             Files.createDirectories(resourceDirectory);
             FileCopyUtils.copy(imageBytes, filePath.toFile());

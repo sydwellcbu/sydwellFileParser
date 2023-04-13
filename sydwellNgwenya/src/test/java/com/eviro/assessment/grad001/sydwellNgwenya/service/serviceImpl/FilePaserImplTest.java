@@ -45,9 +45,9 @@ public class FilePaserImplTest {
     @BeforeEach
     void setUp() {
 
-        csvFlateFile = CsvFlateFile.builder().name("Momentum").surName("Health").imageFormat("image/png").imageData(base64ImageData).build();
+//        csvFlateFile = CsvFlateFile.builder().name("Momentum").surName("Health").imageFormat("image/png").imageData(base64ImageData).build();
         
-        accountProfile = AccountProfile.builder().name(csvFlateFile.getName()).surname(csvFlateFile.getSurName()).httpImageLink("file:/C:/Users/Public/Desktop/Momentum_Health.png").build();
+    //    accountProfile = AccountProfile.builder().name(csvFlateFile.getName()).surname(csvFlateFile.getSurName()).httpImageLink("file:/C:/Users/Public/Desktop/Momentum_Health.png").build();
     }
 
     

@@ -6,7 +6,6 @@
 package com.eviro.assessment.grad001.sydwellNgwenya.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Builder
 public class CsvFlateFile {
 
     private String name;
