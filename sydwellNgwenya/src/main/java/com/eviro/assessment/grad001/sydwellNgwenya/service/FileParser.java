@@ -6,6 +6,7 @@
 package com.eviro.assessment.grad001.sydwellNgwenya.service;
 
 import com.eviro.assessment.grad001.sydwellNgwenya.error.AccountProfileNotFound;
+import com.eviro.assessment.grad001.sydwellNgwenya.error.CsvFlateFileOutOfBound;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -16,11 +17,11 @@ import java.net.URI;
  */
 public interface FileParser {
 
-    void parseCSV(File csvFile);
+    void parseCSV(File csvFile)  throws CsvFlateFileOutOfBound;
 
     File convertCSVDataToImage(String base64ImageString) throws IOException;
 
     URI createImagelink(File fileImage);
 
-    String getImageHttpLink(String name, String Surname, File csvFile) throws AccountProfileNotFound;
+    String getImageHttpLink(String name, String Surname, File csvFile) throws AccountProfileNotFound,CsvFlateFileOutOfBound;
 }

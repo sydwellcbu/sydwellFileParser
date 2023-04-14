@@ -6,13 +6,12 @@
 package com.eviro.assessment.grad001.sydwellNgwenya.controller;
 
 import com.eviro.assessment.grad001.sydwellNgwenya.error.AccountProfileNotFound;
+import com.eviro.assessment.grad001.sydwellNgwenya.error.CsvFlateFileOutOfBound;
 import com.eviro.assessment.grad001.sydwellNgwenya.service.FileParser;
-import static com.eviro.assessment.grad001.sydwellNgwenya.service.serviceImpl.FilePaserImpl.resourceDirectory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,19 +39,16 @@ public class ImageController {
     public static final Logger logger = Logger.getLogger(ImageController.class.getName());
 
     @GetMapping(value = "/{name}/{surname}/{pattern}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public ResponseEntity<FileSystemResource> getHttpImagelink(@PathVariable String name, @PathVariable String surname, @PathVariable("pattern") @Pattern(regexp = "\\w\\.\\w") String pattern, @RequestParam("file") MultipartFile multipartFile) throws AccountProfileNotFound {
+    public ResponseEntity<FileSystemResource> getHttpImagelink(@PathVariable String name, @PathVariable String surname, @PathVariable("pattern") @Pattern(regexp = "\\w\\.\\w") String pattern, @RequestParam("file") MultipartFile multipartFile) throws AccountProfileNotFound, IOException, CsvFlateFileOutOfBound {
         logger.info("Inside get HttpImageLink in Image Conroller Class");
-        File file = null;
-        try {
-            file = convertMultipartFileToFile(multipartFile);
-        } catch (IOException ex) {
-            Logger.getLogger(ImageController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+        File file = convertMultipartFileToFile(multipartFile);
 
         String httpLink = fileParser.getImageHttpLink(name.trim().replaceAll("\\s", ""), surname.trim().replaceAll("\\s", ""), file);
+        String path = httpLink.substring(httpLink.lastIndexOf("src"), httpLink.lastIndexOf('/') + 1);
 
-     
-        FileSystemResource resource = new FileSystemResource(resourceDirectory + "/" + pattern);
+        FileSystemResource resource = new FileSystemResource(path + pattern);
+
         return ResponseEntity.ok()
                 .body(resource);
     }

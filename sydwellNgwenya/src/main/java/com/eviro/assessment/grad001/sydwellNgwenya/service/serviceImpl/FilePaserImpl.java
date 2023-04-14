@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import static com.eviro.assessment.grad001.sydwellNgwenya.controller.ImageController.logger;
+import com.eviro.assessment.grad001.sydwellNgwenya.error.CsvFlateFileOutOfBound;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.FileCopyUtils;
 
@@ -39,10 +40,10 @@ public class FilePaserImpl implements FileParser {
     @Autowired
     private AccountProfileRepository accountProfileRepository;
     private CsvFlateFile csvFlateFile;
-    public static final Path resourceDirectory = Paths.get("src", "resources", "images");
+    private static final Path RESOURCEDIRETORY = Paths.get("src", "main", "resources");
+
     @Override
-    public void parseCSV(File csvFile) {
-        boolean skip = false;
+    public void parseCSV(File csvFile) throws CsvFlateFileOutOfBound{
 
         try {
             //getting csv file path
@@ -50,35 +51,32 @@ public class FilePaserImpl implements FileParser {
 
             //passing the file content to a list of a string
             List<String> csvContent = Files.readAllLines(csvFilePath);
-
+            csvContent.remove(csvContent.get(0));
             //reading line by line of the string list
             for (String line : csvContent) {
-                if (skip == true) {
-                    logger.info("parseCSV file in FilePaserImpl ");
-                    String[] fields = line.split(",");
-                    if (fields.length == 4) {
-                        //passing the csv content to a new csvFlateFile
-                        csvFlateFile = new CsvFlateFile(fields[0].trim().replaceAll("\\s", ""), fields[1].trim().replaceAll("\\s", ""), fields[2].substring(6), fields[3]);
-                        logger.log(Level.INFO, "convertCSVDataToImage in FilePaserImpl size ={0}", fields.length);
-                        //calling the convertCSVDataToImage to create a physical image file
-                        File imagePhysicalFile = convertCSVDataToImage(csvFlateFile.getImageData());
-                        logger.info("createImagelink in FilePaserImpl");
-                        //creating the fille image uri
-                        URI imageUri = createImagelink(imagePhysicalFile);
-                        logger.info("createHttpImageLink in FilePaserImpl");
-                        //creating http image link
-                        String httpImageLink = createHttpImageLink(imageUri);
-                        //Saving  Account Profile
-                        AccountProfile dbAccountProfile = new AccountProfile(csvFlateFile.getName(), csvFlateFile.getSurName(), httpImageLink);
-                        logger.info("Saving CSV File in FilePaserImpl");
-                        accountProfileRepository.save(dbAccountProfile);
+                logger.info("parseCSV file in FilePaserImpl ");
+                String[] fields = line.split(",");
+                if (fields.length == 4) {
+                    //passing the csv content to a new csvFlateFile
+                    csvFlateFile = new CsvFlateFile(fields[0].trim().replaceAll("\\s", ""), fields[1].trim().replaceAll("\\s", ""), fields[2].substring(6), fields[3]);
+                    logger.log(Level.INFO, "convertCSVDataToImage in FilePaserImpl size ={0}", fields.length);
+                    //calling the convertCSVDataToImage to create a physical image file
+                    File imagePhysicalFile = convertCSVDataToImage(csvFlateFile.getImageData());
+                    logger.info("createImagelink in FilePaserImpl");
+                    //creating the fille image uri
+                    URI imageUri = createImagelink(imagePhysicalFile);
+                    logger.info("createHttpImageLink in FilePaserImpl");
+                    //creating http image link
+                    String httpImageLink = createHttpImageLink(imageUri);
+                    //Saving  Account Profile
+                    AccountProfile dbAccountProfile = new AccountProfile(csvFlateFile.getName(), csvFlateFile.getSurName(), imageUri.toString());
+                    logger.info("Saving CSV File in FilePaserImpl");
+                    accountProfileRepository.save(dbAccountProfile);
 
-                    } else {
-                        logger.warning("CsvFile must have 4 feilds");
-                    }
+                } else {
+                    throw new CsvFlateFileOutOfBound("Csv Flate File Does Not Have 4 Fields");
                 }
 
-                skip = true;
             }
         } catch (IOException ex) {
             Logger.getLogger(FilePaserImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -92,14 +90,14 @@ public class FilePaserImpl implements FileParser {
         logger.info("inside convertCSVDataToImage in FilePaserImpl");
         /*            Decode base64 image data and save as physical file */
         byte[] imageBytes = Base64.getDecoder().decode(base64ImageString);
-        String imageName = csvFlateFile.getName()+csvFlateFile.getSurName() + "." + csvFlateFile.getImageFormat();
+        String imageName = csvFlateFile.getName() + csvFlateFile.getSurName() + "." + csvFlateFile.getImageFormat();
         Path filePath = null;
         try {
 
-            filePath = resourceDirectory.resolve(imageName);
-            Files.createDirectories(resourceDirectory);
+            filePath = RESOURCEDIRETORY.resolve(imageName);
+            Files.createDirectories(RESOURCEDIRETORY);
             FileCopyUtils.copy(imageBytes, filePath.toFile());
-            Files.createDirectories(resourceDirectory);
+            Files.createDirectories(RESOURCEDIRETORY);
 
         } catch (IOException ex) {
             Logger.getLogger(FilePaserImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -115,15 +113,14 @@ public class FilePaserImpl implements FileParser {
     }
 
     @Override
-    public String getImageHttpLink(String name, String Surname, File csvFile) throws AccountProfileNotFound{
+    public String getImageHttpLink(String name, String Surname, File csvFile) throws AccountProfileNotFound, CsvFlateFileOutOfBound {
 
         logger.info("inside getImageHttpLink in FilePaserImpl");
 
         parseCSV(csvFile);
 
-        
-            return getHttpLinkFromDb(name, Surname);
-   
+        return getHttpLinkFromDb(name, Surname);
+
     }
 
     private String createHttpImageLink(URI imageUri) {
@@ -134,8 +131,7 @@ public class FilePaserImpl implements FileParser {
         String stringUri = imageUri.toString();
         int lastIndex = stringUri.lastIndexOf("/");
         String lastPart = stringUri.substring(lastIndex);
-        String imageUrl = http+lastPart;
-        
+        String imageUrl = http + lastPart;
 
         return imageUrl;
     }
