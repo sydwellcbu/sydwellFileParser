@@ -7,7 +7,7 @@ package com.eviro.assessment.grad001.sydwellNgwenya.controller.controllerAdviser
 
 import com.eviro.assessment.grad001.sydwellNgwenya.entity.ErrorMessage;
 import com.eviro.assessment.grad001.sydwellNgwenya.error.AccountProfileNotFound;
-import com.eviro.assessment.grad001.sydwellNgwenya.error.CsvFlateFileOutOfBound;
+import com.eviro.assessment.grad001.sydwellNgwenya.error.CsvFileStringIndexOutOfBounds;
 import java.io.IOException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,8 +41,8 @@ public class RestResponseEntityExceptionhandler extends ResponseEntityExceptionH
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
 
-    @ExceptionHandler(CsvFlateFileOutOfBound.class)
-    public ResponseEntity<ErrorMessage> ioExceptions(CsvFlateFileOutOfBound csvFlateFileOutOfBound, WebRequest webRequest) {
+    @ExceptionHandler(CsvFileStringIndexOutOfBounds.class)
+    public ResponseEntity<ErrorMessage> ioExceptions(CsvFileStringIndexOutOfBounds csvFlateFileOutOfBound, WebRequest webRequest) {
 
         ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_ACCEPTABLE, csvFlateFileOutOfBound.getMessage());
 

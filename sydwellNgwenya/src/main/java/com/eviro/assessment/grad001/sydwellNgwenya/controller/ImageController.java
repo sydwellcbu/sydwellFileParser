@@ -6,7 +6,7 @@
 package com.eviro.assessment.grad001.sydwellNgwenya.controller;
 
 import com.eviro.assessment.grad001.sydwellNgwenya.error.AccountProfileNotFound;
-import com.eviro.assessment.grad001.sydwellNgwenya.error.CsvFlateFileOutOfBound;
+import com.eviro.assessment.grad001.sydwellNgwenya.error.CsvFileStringIndexOutOfBounds;
 import com.eviro.assessment.grad001.sydwellNgwenya.service.FileParser;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,7 +39,7 @@ public class ImageController {
     public static final Logger logger = Logger.getLogger(ImageController.class.getName());
 
     @GetMapping(value = "/{name}/{surname}/{pattern}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public ResponseEntity<FileSystemResource> getHttpImagelink(@PathVariable String name, @PathVariable String surname, @PathVariable("pattern") @Pattern(regexp = "\\w\\.\\w") String pattern, @RequestParam("file") MultipartFile multipartFile) throws AccountProfileNotFound, IOException, CsvFlateFileOutOfBound {
+    public ResponseEntity<FileSystemResource> getHttpImagelink(@PathVariable String name, @PathVariable String surname, @PathVariable("pattern") @Pattern(regexp = "\\w\\.\\w") String pattern, @RequestParam("file") MultipartFile multipartFile) throws AccountProfileNotFound, IOException, CsvFileStringIndexOutOfBounds {
         logger.info("Inside get HttpImageLink in Image Conroller Class");
 
         File file = convertMultipartFileToFile(multipartFile);
@@ -53,7 +53,7 @@ public class ImageController {
                 .body(resource);
     }
 
-    private File convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
+    public File convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
         logger.info("Inside convertMultipartFileToFile in Image Conroller Class");
         File file;
         try (InputStream inputStream = multipartFile.getInputStream()) {
