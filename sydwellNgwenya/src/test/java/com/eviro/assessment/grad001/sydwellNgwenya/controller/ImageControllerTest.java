@@ -1,5 +1,6 @@
+//C:\Users\Administrator\Desktop\NEW\sydwellNgwenya\src\test\java\com\eviro\assessment\grad001\sydwellNgwenya\controller
 /*
- * To change this license header, choose License Headers in Project Properties.
+ * To change this license header, choose License Headers in Project Properties.on
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -48,11 +49,11 @@ public class ImageControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private final String httpLink = "http://sydwellNgwenya.grad001.assessment.eviro.com/src/main/resources/images/MomentumHealth.png";
+    private String httpLink = "http://sydwellNgwenya.grad001.assessment.eviro.com/src/main/resources/images/MomentumHealth.png";
 
-    private final File csvFile = new File("C:/Users/Administrator/Downloads/enviro.csv");
+    private File csvFile = new File("C:/Users/Administrator/Downloads/enviro.csv");
 
-    private final String imagePath = Paths.get("src", "main", "resources", "images").toString() + "/MomentumHealth.png";
+    private String imagePath = Paths.get("src", "main", "resources", "images").toString() + "/MomentumHealth.png";
 
     @BeforeEach
     void settingUp() throws AccountProfileNotFound, CsvFileStringIndexOutOfBounds, IOException {

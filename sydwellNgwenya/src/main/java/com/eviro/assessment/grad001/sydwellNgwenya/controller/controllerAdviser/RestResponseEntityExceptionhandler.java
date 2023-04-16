@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 /**
@@ -26,7 +25,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class RestResponseEntityExceptionhandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AccountProfileNotFound.class)
-    public ResponseEntity<ErrorMessage> accountProfileNotFound(AccountProfileNotFound accountProfileNotFound, WebRequest webRequest) {
+    public ResponseEntity<ErrorMessage> accountProfileNotFound(AccountProfileNotFound accountProfileNotFound) {
 
         ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND, accountProfileNotFound.getMessage());
 
@@ -34,7 +33,7 @@ public class RestResponseEntityExceptionhandler extends ResponseEntityExceptionH
     }
 
     @ExceptionHandler(IOException.class)
-    public ResponseEntity<ErrorMessage> ioExceptions(IOException iOException, WebRequest webRequest) {
+    public ResponseEntity<ErrorMessage> ioExceptions(IOException iOException) {
 
         ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND, iOException.getMessage());
 
@@ -42,7 +41,7 @@ public class RestResponseEntityExceptionhandler extends ResponseEntityExceptionH
     }
 
     @ExceptionHandler(CsvFileStringIndexOutOfBounds.class)
-    public ResponseEntity<ErrorMessage> ioExceptions(CsvFileStringIndexOutOfBounds csvFlateFileOutOfBound, WebRequest webRequest) {
+    public ResponseEntity<ErrorMessage> csvFileStringIndexOutOfBounds(CsvFileStringIndexOutOfBounds csvFlateFileOutOfBound) {
 
         ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_ACCEPTABLE, csvFlateFileOutOfBound.getMessage());
 

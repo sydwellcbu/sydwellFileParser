@@ -40,7 +40,7 @@ public class FilePaserImpl implements FileParser {
     @Autowired
     private AccountProfileRepository accountProfileRepository;
 
-    private static final Path RESOURCEDIRETORY = Paths.get("src", "main", "resources","images");
+    private static final Path RESOURCEDIRETORY = Paths.get("src", "main", "resources", "images");
 
     @Override
     public void parseCSV(File csvFile) throws CsvFileStringIndexOutOfBounds, IOException {
@@ -91,16 +91,11 @@ public class FilePaserImpl implements FileParser {
         byte[] imageBytes = Base64.getDecoder().decode(flateFile.getImageData());
         String imageName = flateFile.getName() + flateFile.getSurName() + "." + flateFile.getImageFormat();
         Path filePath = null;
-        try {
 
-            filePath = RESOURCEDIRETORY.resolve(imageName);
-            Files.createDirectories(RESOURCEDIRETORY);
-            FileCopyUtils.copy(imageBytes, filePath.toFile());
-            Files.createDirectories(RESOURCEDIRETORY);
-
-        } catch (IOException ex) {
-            Logger.getLogger(FilePaserImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        filePath = RESOURCEDIRETORY.resolve(imageName);
+        Files.createDirectories(RESOURCEDIRETORY);
+        FileCopyUtils.copy(imageBytes, filePath.toFile());
+        Files.createDirectories(RESOURCEDIRETORY);
 
         return filePath.toFile();
     }
